@@ -1,0 +1,6 @@
+{
+  "name": "Cadence — Mindful Life & Task Dashboard",
+  "description": "A polished, visually satisfying personal command center for Website, YouTube, House, Reading, and Workout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
