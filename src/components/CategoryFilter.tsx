@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTask } from '../context/TaskContext';
 import { AreaId } from '../types';
-import { ShoppingBag, Video, Home, BookOpen, Dumbbell, Sparkles } from 'lucide-react';
+import { ShoppingBag, Video, Home, BookOpen, Dumbbell, Sparkles, Folder } from 'lucide-react';
 
 const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
   ShoppingBag,
@@ -9,6 +9,7 @@ const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
   Home,
   BookOpen,
   Dumbbell,
+  Folder,
 };
 
 export const CategoryFilter: React.FC = () => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Task } from '../types';
 import { useTask } from '../context/TaskContext';
 import { formatTime12h, formatNiceDate } from '../utils/date';
-import { Check, Clock, Repeat, CheckSquare, GripVertical, Paperclip, Flame, ChevronRight } from 'lucide-react';
+import { Check, Clock, Repeat, CheckSquare, GripVertical, Paperclip, Flame, ChevronRight, ExternalLink } from 'lucide-react';
 
 interface TaskItemProps {
   task: Task;

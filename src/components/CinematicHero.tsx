@@ -8,6 +8,7 @@ import {
   CinemaCollection,
   CinemaImage,
 } from '../data/cinemaData';
+import { getAssetUrl } from '../utils/assetStorage';
 
 const LOCAL_STORAGE_COLLECTIONS_KEY = 'cadence_cinema_collections_v1';
 const LOCAL_STORAGE_IMAGES_KEY = 'cadence_cinema_images_v1';
@@ -31,6 +32,40 @@ export const CinematicHero: React.FC = () => {
 
   const [activeCollectionId, setActiveCollectionId] = useState<string>('col-films');
   const [isManagerOpen, setIsManagerOpen] = useState(false);
+
+  // Restore & hydrate Object URLs from IndexedDB for any custom uploaded images
+  useEffect(() => {
+    let isMounted = true;
+    async function hydrateCustomImages() {
+      try {
+        const hasCustom = images.some((img) => img.id.startsWith('img-user-'));
+        if (!hasCustom) return;
+
+        const updated = await Promise.all(
+          images.map(async (img) => {
+            if (img.id.startsWith('img-user-')) {
+              const liveUrl = await getAssetUrl(img.id);
+              if (liveUrl) {
+                return { ...img, url: liveUrl };
+              }
+            }
+            return img;
+          })
+        );
+
+        if (isMounted) {
+          setImages(updated);
+        }
+      } catch (err) {
+        console.warn('Failed to hydrate custom slideshow images from IndexedDB:', err);
+      }
+    }
+
+    hydrateCustomImages();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Sync to localStorage
   useEffect(() => {

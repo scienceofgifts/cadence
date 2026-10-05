@@ -52,6 +52,16 @@ export const CATEGORIES: CategoryInfo[] = [
     borderTint: 'rgba(92, 147, 214, 0.28)',
     iconName: 'Dumbbell',
   },
+  {
+    id: 'other',
+    name: 'Other',
+    shortName: 'Other',
+    description: 'General tasks, miscellaneous errands, and uncategorized items',
+    accentColor: '#94A3B8',
+    bgTint: 'rgba(148, 163, 184, 0.12)',
+    borderTint: 'rgba(148, 163, 184, 0.3)',
+    iconName: 'Folder',
+  },
 ];
 
 export const INITIAL_PROJECTS: Project[] = [

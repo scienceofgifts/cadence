@@ -1,4 +1,4 @@
-export type AreaId = 'website-shop' | 'youtube' | 'house' | 'reading' | 'workout';
+export type AreaId = 'website-shop' | 'youtube' | 'house' | 'reading' | 'workout' | 'other';
 
 export type Priority = 'none' | 'low' | 'medium' | 'high';
 
@@ -152,4 +152,5 @@ export interface QuickLink {
   description: string;
   iconName: string;
   isExternal: boolean;
+  isCustom?: boolean;
 }

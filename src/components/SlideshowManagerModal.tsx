@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CinemaImage, CinemaCollection } from '../data/cinemaData';
-import { saveImageBlob, deleteImageBlob } from '../utils/indexedDB';
+import { saveAsset, deleteAsset, getAssetUrl } from '../utils/assetStorage';
 import {
   X,
   Plus,
@@ -86,19 +86,16 @@ export const SlideshowManagerModal: React.FC<SlideshowManagerModalProps> = ({
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const id = `img-user-${Date.now()}-${i}`;
-      const dataUrl = await new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (event) => resolve(event.target?.result as string);
-        reader.readAsDataURL(file);
-      });
+      const title = file.name.replace(/\.[^/.]+$/, "");
 
-      // Save blob to IndexedDB to preserve memory
-      await saveImageBlob(id, dataUrl);
+      // Save actual file/blob to IndexedDB
+      await saveAsset(id, file, 'slideshow_image', title);
+      const url = await getAssetUrl(id);
 
       newImages.push({
         id,
-        title: file.name.replace(/\.[^/.]+$/, ""),
-        url: dataUrl,
+        title,
+        url: url || '',
         collectionId: activeCollectionId,
       });
     }
@@ -107,7 +104,7 @@ export const SlideshowManagerModal: React.FC<SlideshowManagerModalProps> = ({
   };
 
   const handleDeleteImage = async (id: string) => {
-    await deleteImageBlob(id);
+    await deleteAsset(id);
     onUpdateImages(images.filter((img) => img.id !== id));
   };
 

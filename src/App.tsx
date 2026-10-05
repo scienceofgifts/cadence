@@ -81,7 +81,7 @@ const DashboardContent: React.FC = () => {
         <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>Cadence Personal Workspace</span>
           <div className="flex items-center gap-3">
-            <span>Website / Shop · YouTube · House · Reading · Workout</span>
+            <span>Website / Shop · YouTube · House · Reading · Workout · Other</span>
           </div>
         </div>
       </footer>

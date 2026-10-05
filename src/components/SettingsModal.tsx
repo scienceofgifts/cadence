@@ -22,6 +22,7 @@ import {
   Palette,
 } from 'lucide-react';
 import { audioFX } from '../utils/audio';
+import { saveCustomBackground } from '../utils/assetStorage';
 
 export const SettingsModal: React.FC = () => {
   const {
@@ -73,18 +74,17 @@ export const SettingsModal: React.FC = () => {
     }
   };
 
-  const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        if (result) {
-          updateBackground({ preset: 'custom', customImageUrl: result });
-          triggerToast("Background image uploaded!");
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        const { url } = await saveCustomBackground(file);
+        updateBackground({ preset: 'custom', customImageUrl: url });
+        triggerToast("Custom background saved & applied!");
+      } catch (err) {
+        console.error("Failed to save background to IndexedDB:", err);
+        triggerToast("Failed to upload background image.");
+      }
     }
   };
 

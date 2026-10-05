@@ -28,6 +28,7 @@ import {
   generateProjectWorkflow,
   createInitialWWIIGiftGuideWorkflow,
 } from '../data/workflowTemplates';
+import { getActiveCustomBackgroundUrl } from '../utils/assetStorage';
 
 interface TaskContextType {
   tasks: Task[];
@@ -369,6 +370,39 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error("Error saving projects", e);
     }
   }, [projects]);
+
+  // Hydrate active custom background from IndexedDB on startup
+  useEffect(() => {
+    let isMounted = true;
+    async function hydrateCustomBackground() {
+      try {
+        const saved = localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed?.background?.preset === 'custom') {
+            const liveUrl = await getActiveCustomBackgroundUrl();
+            if (liveUrl && isMounted) {
+              setSettings((prev) => ({
+                ...prev,
+                background: {
+                  ...prev.background,
+                  preset: 'custom',
+                  customImageUrl: liveUrl,
+                },
+              }));
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not hydrate custom background from IndexedDB:", err);
+      }
+    }
+
+    hydrateCustomBackground();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -1083,10 +1117,24 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     triggerToast(`Scene Active: ${scene.name}`, scene.description);
   };
 
-  const updateBackground = (updates: Partial<BackgroundSettings>) => {
+  const updateBackground = async (updates: Partial<BackgroundSettings>) => {
+    let resolvedUrl = updates.customImageUrl;
+    if (updates.preset === 'custom' && !resolvedUrl && !settings.background.customImageUrl) {
+      try {
+        const activeUrl = await getActiveCustomBackgroundUrl();
+        if (activeUrl) {
+          resolvedUrl = activeUrl;
+        }
+      } catch {}
+    }
+
     setSettings((prev) => ({
       ...prev,
-      background: { ...prev.background, ...updates },
+      background: {
+        ...prev.background,
+        ...updates,
+        ...(resolvedUrl !== undefined ? { customImageUrl: resolvedUrl } : {}),
+      },
     }));
   };
 

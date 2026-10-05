@@ -64,19 +64,24 @@ export const TaskDetailDrawer: React.FC = () => {
   const handleAddLinkSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newLinkUrl.trim()) return;
-    const newLink = {
+    const formattedUrl = newLinkUrl.trim().startsWith('http') ? newLinkUrl.trim() : `https://${newLinkUrl.trim()}`;
+    const newLinkObj = {
       id: `link-${Date.now()}`,
-      title: newLinkTitle.trim() || newLinkUrl.trim(),
-      url: newLinkUrl.trim().startsWith('http') ? newLinkUrl.trim() : `https://${newLinkUrl.trim()}`,
+      title: newLinkTitle.trim() || formattedUrl,
+      url: formattedUrl,
     };
-    updateTask(task.id, { links: [...(task.links || []), newLink] });
+    updateTask(task.id, {
+      links: [...(task.links || []), newLinkObj],
+    });
     setNewLinkTitle('');
     setNewLinkUrl('');
     setShowAddLink(false);
   };
 
   const handleDeleteLink = (linkId: string) => {
-    updateTask(task.id, { links: (task.links || []).filter((l) => l.id !== linkId) });
+    updateTask(task.id, {
+      links: (task.links || []).filter((l) => l.id !== linkId),
+    });
   };
 
   const filteredProjects = projects.filter((p) => p.areaId === task.areaId);
